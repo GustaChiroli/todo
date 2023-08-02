@@ -50,7 +50,7 @@ Este projeto é apenas para fins educacionais e de aprendizado. Não deve ser us
 
 Se você tiver alguma dúvida ou sugestão, sinta-se à vontade para entrar em contato através do meu linkedin:
 
-<p align="center">
+<p align="center" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;>
   <a href="https://www.linkedin.com/in/gustavo-da-silva-chiroli-7788ba212">Linkedin</a>
 </p>
 
