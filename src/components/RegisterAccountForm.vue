@@ -107,6 +107,8 @@ import { ref, Ref, defineComponent } from 'vue';
 import { QInput } from 'quasar';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import userModel from '../models/userModel';
+import { registerUserController } from '../controllers/userController';
 
 const email = ref('');
 const password = ref('');
@@ -166,19 +168,16 @@ export default defineComponent({
         loading.value = true;
         const phone: string = ddi.value.concat(cellphone.value);
 
-        const user = {
-          email: email.value,
-          password: password.value,
-          name: name.value,
-          birthdate: birthdate.value,
-          phone: phone,
-          gender: gender.value,
-        };
-        console.log(user);
-        const response = await axios.post(
-          'http://26.122.188.167:5000/criar_login',
-          user
+        const user = new userModel(
+          email.value,
+          password.value,
+          name.value,
+          birthdate.value,
+          phone,
+          gender.value
         );
+        console.log(user);
+        const response = await registerUserController(user);
         console.log(response);
 
         // Redirect the user to the dashboard or the desired page upon successful login

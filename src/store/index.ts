@@ -34,7 +34,6 @@ const store = createStore<State>({
   },
   getters: {
     getToken: (state) => state.token,
-    hasAuthToken: (state) => !!state.token,
     pendingProducts: (state) => state.pendingProducts,
   },
 });

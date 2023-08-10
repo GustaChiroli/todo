@@ -40,9 +40,10 @@
 <script lang="ts">
 import { ref, Ref, defineComponent } from 'vue';
 import { QInput } from 'quasar';
-import axios from 'axios';
 import { useRouter } from 'vue-router';
 import store from '../store/index';
+import { loginUserController } from '../controllers/userController';
+import loginUserModel from '../models/loginUserModel';
 
 const login = ref('');
 const password = ref('');
@@ -70,11 +71,8 @@ export default defineComponent({
     const handleLogin = async () => {
       try {
         loading.value = true;
-        const user = { email: login.value, password: password.value };
-        const response = await axios.post(
-          'http://26.122.188.167:5000/login',
-          user
-        );
+        const userLogin = new loginUserModel(login.value, password.value);
+        const response = await loginUserController(userLogin);
         console.log(response);
 
         const authToken = response.data.token;
@@ -82,15 +80,13 @@ export default defineComponent({
         store.dispatch('saveToken', authToken);
         console.log(store.getters.getToken);
 
-        login.value = '';
-        password.value = '';
-
         // Redirect the user to the dashboard or the desired page upon successful login
         router.push({ name: 'dashboard' });
       } catch (error) {
         console.error('Login failed', error);
       } finally {
         loading.value = false;
+        resetFields();
         resetValidation();
       }
     };
@@ -101,8 +97,9 @@ export default defineComponent({
       }
     };
 
-    const goToRegisterPage = () => {
-      router.push({ name: 'registeraccount' });
+    const resetFields = () => {
+      login.value = '';
+      password.value = '';
     };
 
     return {
@@ -114,11 +111,7 @@ export default defineComponent({
       passwordRules,
       loading,
       resetValidation,
-
-      resetFields() {
-        login.value = '';
-        password.value = '';
-      },
+      resetFields,
     };
   },
 });
