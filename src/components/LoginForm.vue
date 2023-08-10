@@ -8,7 +8,6 @@
         v-model="login"
         label="Login"
         dense
-        class="q-mb-md"
         :disable="loading"
         :rules="emailRules || 'Email invalido!'"
       />
@@ -19,19 +18,21 @@
         type="password"
         label="Senha"
         dense
-        class="q-mb-md"
         :disable="loading"
         :rules="passwordRules"
       />
       <q-btn
         color="primary"
         @click="handleLogin"
-        label="Login"
+        label="Entrar"
         dense
-        class="q-mt-md"
         :loading="loading"
         :disable="loading"
       />
+      <br />
+      <router-link :to="{ name: 'registeraccount' }"
+        >registre-se aqui</router-link
+      >
     </div>
   </div>
 </template>
@@ -41,6 +42,7 @@ import { ref, Ref, defineComponent } from 'vue';
 import { QInput } from 'quasar';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import store from '../store/index';
 
 const login = ref('');
 const password = ref('');
@@ -68,14 +70,17 @@ export default defineComponent({
     const handleLogin = async () => {
       try {
         loading.value = true;
-        const user = { email: login.value, senha: password.value };
+        const user = { email: login.value, password: password.value };
         const response = await axios.post(
-          'https://sistemagustavo.up.railway.app/login',
+          'http://26.122.188.167:5000/login',
           user
         );
         console.log(response);
 
         const authToken = response.data.token;
+
+        store.dispatch('saveToken', authToken);
+        console.log(store.getters.getToken);
 
         login.value = '';
         password.value = '';
@@ -94,6 +99,10 @@ export default defineComponent({
       if (fieldRef.value) {
         fieldRef.value.resetValidation();
       }
+    };
+
+    const goToRegisterPage = () => {
+      router.push({ name: 'registeraccount' });
     };
 
     return {
