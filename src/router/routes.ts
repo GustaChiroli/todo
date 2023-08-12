@@ -2,12 +2,19 @@ import { RouteRecordRaw } from 'vue-router';
 import LoginPage from '../pages/LoginPage.vue';
 import DashboardPage from '../pages/DashboardPage.vue';
 import RegisterAccountPage from '../pages/RegisterAccountPage.vue';
+import ValidateAccountPage from '../pages/ValidateAccountPage.vue';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'login',
     component: LoginPage,
+    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+  },
+  {
+    path: '/validate/:code',
+    name: 'validate',
+    component: ValidateAccountPage,
     children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
   },
   {

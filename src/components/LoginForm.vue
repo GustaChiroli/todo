@@ -1,47 +1,61 @@
 <template>
-  <div class="row">
-    <div class="col full-height flex-center">
-      <q-input
-        filled
-        ref="fieldRef"
-        type="email"
-        v-model="login"
-        label="Login"
-        dense
-        :disable="loading"
-        :rules="emailRules || 'Email invalido!'"
-      />
-      <q-input
-        ref="fieldRef"
-        filled
-        v-model="password"
-        type="password"
-        label="Senha"
-        dense
-        :disable="loading"
-        :rules="passwordRules"
-      />
-      <q-btn
-        color="primary"
-        @click="handleLogin"
-        label="Entrar"
-        dense
-        :loading="loading"
-        :disable="loading"
-      />
-      <br />
-      <router-link :to="{ name: 'registeraccount' }"
-        >registre-se aqui</router-link
-      >
+  <div>
+    <div class="row q-col-gutter-x-md">
+      <div class="col-12">
+        <q-input
+          filled
+          ref="fieldRef"
+          type="email"
+          v-model="login"
+          label="Login"
+          dense
+          :disable="loading"
+          :rules="emailRules || 'Email invalido!'"
+        />
+        <q-input
+          ref="fieldRef"
+          filled
+          v-model="password"
+          :type="passwordFieldType"
+          label="Senha"
+          dense
+          :disable="loading"
+          :rules="passwordRules"
+        >
+          <template #append>
+            <q-icon
+              :name="showConfirmPassword ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="showConfirmPassword = !showConfirmPassword"
+            />
+          </template>
+        </q-input>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 flex-center">
+        <q-btn
+          color="primary"
+          @click="handleLogin"
+          label="Entrar"
+          block
+          :loading="loading"
+          :disable="loading"
+        />
+        <br />
+        <router-link :to="{ name: 'registeraccount' }"
+          >registre-se aqui</router-link
+        >
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, Ref, defineComponent } from 'vue';
+import { ref, Ref, defineComponent, computed } from 'vue';
 import { QInput } from 'quasar';
+import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import store from '../store/index';
 import { loginUserController } from '../controllers/userController';
 import loginUserModel from '../models/loginUserModel';
 
@@ -62,13 +76,20 @@ const isValidEmail = (email: string) => {
 };
 
 const loading = ref(false);
+const showConfirmPassword = ref(false);
 
 export default defineComponent({
   setup() {
+    const store = useStore();
     const router = useRouter();
     const fieldRef: Ref<QInput | null> = ref(null);
 
+    const passwordFieldType = computed(() => {
+      return showConfirmPassword.value ? 'text' : 'password';
+    });
+
     const handleLogin = async () => {
+      debugger;
       try {
         loading.value = true;
         const userLogin = new loginUserModel(login.value, password.value);
@@ -76,10 +97,16 @@ export default defineComponent({
         console.log(response);
 
         const authToken = response.data.token;
+        store.dispatch({ type: 'saveToken', payload: authToken });
+        const isValidated = response.data.isValidated;
+        const token = await store.getters.getToken;
+        console.log(token);
 
-        store.dispatch('saveToken', authToken);
+        // store.dispatch('saveIsValidated', isValidated);
         console.log(store.getters.getToken);
-
+        if (isValidated === false) {
+          router.push({ name: '' });
+        }
         // Redirect the user to the dashboard or the desired page upon successful login
         router.push({ name: 'dashboard' });
       } catch (error) {
@@ -112,6 +139,8 @@ export default defineComponent({
       loading,
       resetValidation,
       resetFields,
+      showConfirmPassword,
+      passwordFieldType,
     };
   },
 });

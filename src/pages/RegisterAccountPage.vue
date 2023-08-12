@@ -5,7 +5,7 @@
       style="height: 100vh"
     >
       <div class="q-pa-md flex-center">
-        <h1 class="text-h5 q-mb-lg">Register</h1>
+        <h1 class="text-h5 q-mb-lg">Registre-se</h1>
         <register-form />
       </div>
     </auth-layout>

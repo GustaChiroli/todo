@@ -27,7 +27,8 @@ export default defineComponent({
 
 <style>
 .login-card {
-  max-width: 400px;
+  max-width: 800px !important;
+  min-width: 400px;
   margin: 0 auto;
   padding: 20px;
 }

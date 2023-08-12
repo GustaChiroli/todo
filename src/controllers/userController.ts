@@ -1,21 +1,17 @@
 import api from './axiosInstance';
-import store from '../store/index';
-import userModel from '../models/userModel';
+import userModelRegister from '../models/userModelRegister';
 import loginUserModel from '../models/loginUserModel';
+// import { mapActions, useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-
-function redirectToLogin() {
-  const router = useRouter();
-  router.push({ name: 'login' });
-}
+// const store = useStore();
 
 /**
  * A function that register a user in the DataBase
  * @param {JSON} user A JSON with email and password to the API
  * @returns {JSON} A JSON with a message
  */
-export async function registerUserController(user: userModel) {
-  let request = await api.post('/criar_login', user);
+export async function registerUserController(user: userModelRegister) {
+  const request = await api.post('/criar_login', user);
   return request;
 }
 
@@ -25,8 +21,7 @@ export async function registerUserController(user: userModel) {
  * @returns {JSON} A JSON with a message and token
  */
 export async function loginUserController(user: loginUserModel) {
-  let request = await api.post('/login', user);
-  await store.dispatch('saveToken', request.data.token);
+  const request = await api.post('/login', user);
   return request;
 }
 
@@ -34,9 +29,16 @@ export async function loginUserController(user: loginUserModel) {
  * @return {JSON} A JSON with a message
  */
 export async function logoutUserController() {
-  let token = store.getters.getToken;
-  let request = await api.post('/logout', { token: token });
-  await store.dispatch('unSaveToken');
-  redirectToLogin();
+  // const token = store.getters['auth/getToken'];
+  const token = '';
+  const request = await api.post('/logout', { token: token });
+  // await store.dispatch('auth/unsaveToken');
+  // console.log(store.getters['auth/getToken']);
+
+  return request;
+}
+
+export async function validateEmail(code: string) {
+  const request = await api.post('/verificar_email', code);
   return request;
 }

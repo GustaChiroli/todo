@@ -1,113 +1,139 @@
 <template>
-  <div class="row" style="max-width: 300px">
-    <div class="col-12">
-      <q-input
-        filled
-        ref="fieldRef"
-        type="email"
-        v-model="email"
-        label="E-mail"
-        dense
-        :disable="loading"
-        :rules="emailRules || 'Email invalido!'"
-      />
-      <q-input
-        filled
-        ref="fieldRef"
-        type="text"
-        v-model="name"
-        label="Nome"
-        dense
-        :disable="loading"
-        :rules="nameRules || 'Nome invalido!'"
-      />
-      <q-input
-        ref="fieldRef"
-        filled
-        v-model="password"
-        type="password"
-        label="Senha"
-        dense
-        :disable="loading"
-        :rules="passwordRules"
-      />
-      <q-input
-        ref="fieldRef"
-        filled
-        v-model="confirmPassword"
-        type="password"
-        label="Confirme sua senha"
-        dense
-        :disable="loading"
-        :rules="confirmPasswordRules"
-      />
-      <q-input
-        filled
-        ref="fieldRef"
-        type="text"
-        v-model="birthdate"
-        label="Data de nascimento"
-        dense
-        :disable="loading"
-        :rules="birthdateRules || 'Data invalida!'"
-        mask="##/##/####"
-        placeholder="DD/MM/AAAA"
-      />
-      <q-input
-        filled
-        ref="fieldRef"
-        type="text"
-        v-model="ddi"
-        label="Codigo do país"
-        dense
-        :disable="loading"
-        :rules="ddiRules || 'DDI invalido'"
-        mask="+###"
-        placeholder="(+55) Brasil"
-      />
-      <q-input
-        filled
-        ref="fieldRef"
-        type="text"
-        v-model="cellphone"
-        label="Celular"
-        dense
-        :disable="loading"
-        :rules="cellphoneRules || 'O campo celular é obrigatório'"
-        mask="(##) #####-####"
-        placeholder="(99) 99999-9999"
-      />
-      <q-select
-        ref="fieldRef"
-        v-model="gender"
-        :options="options"
-        :disable="loading"
-        :rules="genderRules || 'O camp Gender é obrigatório'"
-        filled
-        dense
-        label="Genero"
-      />
+  <div>
+    <div class="row q-col-gutter-x-md">
+      <div class="col-6">
+        <q-input
+          filled
+          ref="fieldRef"
+          type="text"
+          v-model="name"
+          label="Nome"
+          dense
+          :disable="loading"
+          :rules="nameRules"
+        />
+        <q-input
+          ref="fieldRef"
+          filled
+          v-model="password"
+          :type="passwordFieldType"
+          label="Senha"
+          dense
+          :disable="loading"
+          :rules="passwordRules"
+        >
+          <template #append>
+            <q-icon
+              :name="showConfirmPassword ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="showConfirmPassword = !showConfirmPassword"
+            />
+          </template>
+        </q-input>
+        <q-input
+          filled
+          ref="fieldRef"
+          type="text"
+          v-model="birthdate"
+          label="Data de nascimento"
+          dense
+          :disable="loading"
+          :rules="birthdateRules || 'Data invalida!'"
+          mask="##/##/####"
+          placeholder="DD/MM/AAAA"
+        />
+      </div>
+      <div class="col-6">
+        <q-input
+          filled
+          ref="fieldRef"
+          type="email"
+          v-model="email"
+          label="E-mail"
+          dense
+          :disable="loading"
+          :rules="emailRules || 'Email invalido!'"
+        />
+        <q-input
+          ref="fieldRef"
+          filled
+          v-model="confirmPassword"
+          :type="passwordFieldType"
+          label="Confirme sua senha"
+          dense
+          :disable="loading"
+          :rules="confirmPasswordRules"
+        >
+          <template #append>
+            <q-icon
+              :name="showConfirmPassword ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="showConfirmPassword = !showConfirmPassword"
+            />
+          </template>
+        </q-input>
+        <q-select
+          ref="fieldRef"
+          v-model="gender"
+          :options="options"
+          :disable="loading"
+          :rules="genderRules || 'O camp Gender é obrigatório'"
+          filled
+          dense
+          label="Genero"
+        />
+      </div>
+      <div class="row q-col-gutter-x-sm">
+        <div class="col-4">
+          <q-input
+            filled
+            ref="fieldRef"
+            type="text"
+            v-model="ddi"
+            label="Codigo do país"
+            dense
+            :disable="loading"
+            :rules="ddiRules || 'DDI invalido'"
+            mask="+###"
+            placeholder="(+55) Brasil"
+          />
+        </div>
+        <div class="col-5">
+          <q-input
+            filled
+            ref="fieldRef"
+            type="text"
+            v-model="cellphone"
+            label="Celular"
+            dense
+            :disable="loading"
+            :rules="cellphoneRules || 'O campo celular é obrigatório'"
+            mask="(##) #####-####"
+            placeholder="(99) 99999-9999"
+          />
+        </div>
+      </div>
     </div>
-    <div class="col-12 flex-center">
-      <q-btn
-        color="primary"
-        @click="handleRegister"
-        label="Criar Conta"
-        dense
-        filled
-        :loading="loading"
-        :disable="loading"
-      />
+    <div class="row" style="margin-top: 20px">
+      <div class="col-12 flex-center">
+        <q-btn
+          color="primary"
+          @click="handleRegister"
+          label="Criar Conta"
+          block
+          :loading="loading"
+          :disable="loading"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, Ref, defineComponent } from 'vue';
+import { ref, Ref, defineComponent, computed } from 'vue';
 import { QInput } from 'quasar';
-import axios from 'axios';
 import { useRouter } from 'vue-router';
-import userModel from '../models/userModel';
+import userModelRegister from '../models/userModelRegister';
 import { registerUserController } from '../controllers/userController';
 
 const email = ref('');
@@ -137,8 +163,14 @@ const isValidEmail = (email: string) => {
   return emailRegex.test(email);
 };
 const nameRules = [
-  (val: string) =>
-    (val && val.length <= 35) || 'nome não pode ter mais de 35 caracteres',
+  (val: string) => {
+    if (!val) {
+      return 'digite o nome';
+    } else if (val.length >= 35) {
+      return 'nome não pode ter mais de 35 caracteres';
+    }
+    return true;
+  },
 ];
 const birthdateRules = [
   (val: string) => (val && val.length === 10) || 'data invalida',
@@ -154,6 +186,8 @@ const genderRules = [
   (val: string) => (val && val !== '') || 'é necessário selecionar o genero',
 ];
 
+const showConfirmPassword = ref(false);
+
 const loading = ref(false);
 
 export default defineComponent({
@@ -161,14 +195,19 @@ export default defineComponent({
     const router = useRouter();
     const fieldRef: Ref<QInput | null> = ref(null);
 
+    const passwordFieldType = computed(() => {
+      return showConfirmPassword.value ? 'text' : 'password';
+    });
+
     const handleRegister = async () => {
-      debugger;
+      if (await !validate()) {
+        return;
+      }
       try {
-        debugger;
         loading.value = true;
         const phone: string = ddi.value.concat(cellphone.value);
 
-        const user = new userModel(
+        const user = new userModelRegister(
           email.value,
           password.value,
           name.value,
@@ -189,6 +228,25 @@ export default defineComponent({
         resetValidation();
         resetFields();
       }
+    };
+    const validate = () => {
+      const validators = [
+        fieldRef.value?.validate(),
+        emailRules[0](email.value),
+        passwordRules[0](password.value),
+        confirmPasswordRules[0](confirmPassword.value),
+        nameRules[0](name.value),
+        birthdateRules[0](birthdate.value),
+        ddiRules[0](ddi.value),
+        cellphoneRules[0](cellphone.value),
+        genderRules[0](gender.value),
+      ];
+
+      const isValid = validators.every(
+        (validator) => validator === true || validator === ''
+      );
+
+      return isValid;
     };
 
     const resetValidation = () => {
@@ -229,7 +287,10 @@ export default defineComponent({
       cellphoneRules,
       loading,
       resetValidation,
+      showConfirmPassword,
+      passwordFieldType,
     };
   },
 });
 </script>
+../models/userModelRegister

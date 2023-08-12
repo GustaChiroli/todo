@@ -1,41 +1,27 @@
 import { createStore } from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
+import { AuthState } from './auth/authState';
+import { mutations as authMutations } from './auth/authMutations';
+import { actions as authActions } from './auth/authActions';
+// import { UserState } from './user/userState'; // Ajuste o nome da interface de estado do usuário
+// import { mutations as userMutations } from './user/userMutations';
+// import { getters as userGetters } from './user/userGetters';
 
-interface State {
-  token: string | null;
-  pendingProducts: any[] | null;
-}
-
-const store = createStore<State>({
-  state: {
-    token: null,
-    pendingProducts: null,
+const store = createStore({
+  modules: {
+    auth: {
+      state: () => ({ token: null } as AuthState),
+      mutations: authMutations,
+      actions: authActions,
+    },
+    // user: {
+    //   state: UserState,
+    //   mutations: userMutations,
+    //   getters: userGetters,
+    // },
+    // Outros módulos aqui...
   },
-  mutations: {
-    setToken(state, token: string) {
-      state.token = token;
-    },
-    unSetToken(state) {
-      state.token = null;
-    },
-    setPendingProducts(state, pendingProducts: any[]) {
-      state.pendingProducts = pendingProducts;
-    },
-  },
-  actions: {
-    saveToken({ commit }, token: string) {
-      commit('setToken', token);
-    },
-    unSaveToken({ commit }) {
-      commit('unSetToken');
-    },
-    savePendingProducts({ commit }, pendingProducts: any[]) {
-      commit('setPendingProducts', pendingProducts);
-    },
-  },
-  getters: {
-    getToken: (state) => state.token,
-    pendingProducts: (state) => state.pendingProducts,
-  },
+  plugins: [createPersistedState()],
 });
 
 export default store;
