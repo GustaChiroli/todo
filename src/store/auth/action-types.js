@@ -1,0 +1,4 @@
+export const SAVE_TOKEN = 'SAVE_TOKEN';
+export const UNSET_TOKEN = 'UNSET_TOKEN';
+export const SAVE_ISVALIDATED = 'SAVE_ISVALIDATED';
+export const UNSET_ISVALIDATED = 'UNSET_ISVALIDATED';

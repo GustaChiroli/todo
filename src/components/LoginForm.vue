@@ -46,6 +46,14 @@
         <router-link :to="{ name: 'registeraccount' }"
           >registre-se aqui</router-link
         >
+        <!-- <q-btn
+          color="primary"
+          @click="handleteste"
+          label="Entrar"
+          block
+          :loading="loading"
+          :disable="loading"
+        /> -->
       </div>
     </div>
   </div>
@@ -58,6 +66,7 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { loginUserController } from '../controllers/userController';
 import loginUserModel from '../models/loginUserModel';
+import * as actionTypes from '../store/auth/action-types.js';
 
 const login = ref('');
 const password = ref('');
@@ -80,13 +89,22 @@ const showConfirmPassword = ref(false);
 
 export default defineComponent({
   setup() {
-    const store = useStore();
     const router = useRouter();
+    const store = useStore();
     const fieldRef: Ref<QInput | null> = ref(null);
 
     const passwordFieldType = computed(() => {
       return showConfirmPassword.value ? 'text' : 'password';
     });
+
+    // const handleteste = async () => {
+    //   const teste = '888777575757';
+    //   await store.dispatch(actionTypes.SAVE_ISVALIDATED, teste);
+    //   const token = store.getters.GET_ISVALIDATED;
+    //   const tokenaa = store.state.auth.isValidated;
+    //   console.log('tokenaa', tokenaa);
+    //   console.log(token);
+    // };
 
     const handleLogin = async () => {
       debugger;
@@ -97,18 +115,20 @@ export default defineComponent({
         console.log(response);
 
         const authToken = response.data.token;
-        store.dispatch({ type: 'saveToken', payload: authToken });
-        const isValidated = response.data.isValidated;
-        const token = await store.getters.getToken;
-        console.log(token);
+        console.log('AuthToken:', authToken);
+        store.dispatch(actionTypes.SAVE_TOKEN, authToken);
 
-        // store.dispatch('saveIsValidated', isValidated);
-        console.log(store.getters.getToken);
+        const isValidated = response.data.isValidated;
+        const token = store.getters.GET_TOKEN;
+        console.log('Token from getter:', token);
+
+        store.dispatch(actionTypes.SAVE_ISVALIDATED, isValidated);
         if (isValidated === false) {
-          router.push({ name: '' });
+          router.push('/validate/225588');
+        } else if (isValidated === true) {
+          router.push({ name: 'dashboard' });
         }
         // Redirect the user to the dashboard or the desired page upon successful login
-        router.push({ name: 'dashboard' });
       } catch (error) {
         console.error('Login failed', error);
       } finally {
@@ -141,6 +161,7 @@ export default defineComponent({
       resetFields,
       showConfirmPassword,
       passwordFieldType,
+      // handleteste,
     };
   },
 });

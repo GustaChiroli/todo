@@ -1,17 +1,15 @@
 <template>
-  <div>
-    <h1>Confirmação de E-mail</h1>
-    <p>Seu código de validação: {{ codigo }}</p>
-    <h1>Confirmação de E-mail</h1>
-    <p v-if="validating">Validando código...</p>
-    <p v-else-if="isValid">Código validado! Redirecionando...</p>
-    <p v-else>Código inválido. Por favor, verifique seu e-mail.</p>
+  <div class="q-pa-md flex-center">
+    <h1 v-if="validating">Validando código...</h1>
+    <h1 v-else-if="isValid">Código validado! Redirecionando...</h1>
+    <h1 v-else>Código inválido. Por favor, verifique seu e-mail.</h1>
   </div>
 </template>
 
 <script>
 import { validateEmail } from '../controllers/userController';
-// import { mapActions, useStore } from 'vuex';
+import * as actionTypes from '../store/auth/action-types.js';
+import { useStore } from 'vuex';
 
 export default {
   data() {
@@ -22,16 +20,18 @@ export default {
     };
   },
   async created() {
-    // const { saveToken } = mapActions('auth', ['setToken']);
     // Captura o código da rota usando o parâmetro de rota ":codigo"
+    const store = useStore();
     this.codigo = this.$route.params.code;
     // Aqui você pode fazer chamadas ao backend para validar o código e realizar ações necessárias
     try {
       const response = await validateEmail({ code: this.codigo });
       console.log(response);
       if (response.data.message === 'E-mail validado com sucesso!') {
-        // await store.dispatch('auth/setToken', response.data.token);
+        await store.dispatch(actionTypes.SAVE_TOKEN, response.data.token);
+        console.log('novo token:', store.getters.GET_TOKEN);
         this.isValid = true;
+        await store.dispatch(actionTypes.SAVE_ISVALIDATED, this.isValid);
 
         setTimeout(() => {
           this.$router.push('/dashboard');
@@ -39,6 +39,7 @@ export default {
       } else {
         // Código não é válido
         this.validating = false;
+        await store.dispatch(actionTypes.SAVE_ISVALIDATED, this.isValid);
       }
     } catch (error) {
       console.error('Erro ao validar código:', error);

@@ -1,6 +1,7 @@
 import axios from 'axios';
-// import store from '../store/index'; //importa a instancia do vuex
+import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import * as actionTypes from '../store/auth/action-types.js';
 
 axios.defaults.baseURL = 'http://26.122.188.167:5000'; //ip leo
 // axios.defaults.baseURL = 'https://sistemagustavo.up.railway.app'; //ip railway
@@ -9,6 +10,7 @@ axios.defaults.baseURL = 'http://26.122.188.167:5000'; //ip leo
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const router = useRouter();
+const store = useStore();
 
 const api = axios.create({
   headers: {
@@ -16,7 +18,7 @@ const api = axios.create({
   },
 });
 
-//Usa o interceptor do axios para adicionar o token do vuex ao header de autorização
+// Usa o interceptor do axios para adicionar o token do vuex ao header de autorização
 // api.interceptors.request.use(
 //   (config) => {
 //     const token = store.state.token;
@@ -37,7 +39,9 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 498) {
-      // Token expirado ou inválido, fala o logout do usuário
+      // Token expirado ou inválido, faça o logout do usuário
+      store.dispatch(actionTypes.UNSET_TOKEN);
+      store.dispatch(actionTypes.UNSET_ISVALIDATED);
       // store.commit('logout'); // Chama a mutação de logout no Vuex store
       router.push('/'); // redireciona o usuário para a pagina de login
     }

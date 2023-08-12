@@ -3,6 +3,10 @@ import userModelRegister from '../models/userModelRegister';
 import loginUserModel from '../models/loginUserModel';
 // import { mapActions, useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+// import { useStore } from 'vuex';
+import store from '../store/index.js';
+import * as actionTypes from '../store/auth/action-types.js';
+
 // const store = useStore();
 
 /**
@@ -29,11 +33,10 @@ export async function loginUserController(user: loginUserModel) {
  * @return {JSON} A JSON with a message
  */
 export async function logoutUserController() {
-  // const token = store.getters['auth/getToken'];
-  const token = '';
+  const token = await store.state.auth.token;
   const request = await api.post('/logout', { token: token });
-  // await store.dispatch('auth/unsaveToken');
-  // console.log(store.getters['auth/getToken']);
+  store.dispatch(actionTypes.UNSET_TOKEN);
+  store.dispatch(actionTypes.UNSET_ISVALIDATED);
 
   return request;
 }

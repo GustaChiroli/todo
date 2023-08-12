@@ -8,16 +8,18 @@ import { ref, defineComponent } from 'vue';
 // import { mapActions, useStore } from 'vuex';
 import { logoutUserController } from '../controllers/userController';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 const loading = ref(false);
 
 export default defineComponent({
   setup() {
     const router = useRouter();
+    const store = useStore();
     // const store = useStore();
     const logOut = async () => {
-      const token = '';
-      // store.getters['auth/getToken'];
+      const token = await store.getters.GET_TOKEN;
+
       console.log(token);
       if (token !== null) {
         try {
