@@ -1,5 +1,4 @@
 <template>
-  <button @click="logOut">deslogar</button>
   <h1>DASHBOARD</h1>
 </template>
 
@@ -14,6 +13,10 @@ const loading = ref(false);
 
 export default defineComponent({
   setup() {
+    const leftDrawerOpen = ref(false);
+    const rightDrawerOpen = ref(false);
+    const avatarMenuOpen = ref(false);
+
     const router = useRouter();
     const store = useStore();
     // const store = useStore();
@@ -39,7 +42,24 @@ export default defineComponent({
     return {
       logOut,
       loading,
+      leftDrawerOpen,
+      avatarMenuOpen,
+      toggleLeftDrawer() {
+        leftDrawerOpen.value = !leftDrawerOpen.value;
+      },
+
+      rightDrawerOpen,
+      toggleRightDrawer() {
+        rightDrawerOpen.value = !rightDrawerOpen.value;
+      },
     };
   },
 });
 </script>
+
+<style scoped>
+.button-content {
+  display: flex;
+  align-content: center !important;
+}
+</style>

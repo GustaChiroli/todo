@@ -1,0 +1,4 @@
+export const SAVE_USER = 'SAVE_USER';
+export const UNSET_USER = 'UNSET_USER';
+export const SAVE_ISVALIDATED = 'SAVE_ISVALIDATED';
+export const UNSET_ISVALIDATED = 'UNSET_ISVALIDATED';

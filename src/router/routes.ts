@@ -3,6 +3,8 @@ import LoginPage from '../pages/LoginPage.vue';
 import DashboardPage from '../pages/DashboardPage.vue';
 import RegisterAccountPage from '../pages/RegisterAccountPage.vue';
 import ValidateAccountPage from '../pages/ValidateAccountPage.vue';
+import TaskPage from '../pages/TaskPage.vue';
+import EventsPage from '../pages/EventsPage.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -29,9 +31,19 @@ const routes: RouteRecordRaw[] = [
     component: DashboardPage,
     children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
   },
+  {
+    path: '/tasks',
+    name: 'tasks',
+    component: TaskPage,
+    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+  },
+  {
+    path: '/events',
+    name: 'events',
+    component: EventsPage,
+    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+  },
 
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),

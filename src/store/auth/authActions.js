@@ -1,4 +1,4 @@
-import * as actionTypes from './action-types'; // Importe as constantes
+import * as actionTypes from './action-types';
 
 export const actions = {
   [actionTypes.SAVE_TOKEN]({ commit }, token) {

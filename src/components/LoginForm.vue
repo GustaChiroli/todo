@@ -67,6 +67,8 @@ import { useRouter } from 'vue-router';
 import { loginUserController } from '../controllers/userController';
 import loginUserModel from '../models/loginUserModel';
 import * as actionTypes from '../store/auth/action-types.js';
+// import * as actionTypesa from '../store/user/action-types';
+// import userModel from '../models/userModel';
 
 const login = ref('');
 const password = ref('');
@@ -98,12 +100,19 @@ export default defineComponent({
     });
 
     // const handleteste = async () => {
-    //   const teste = '888777575757';
-    //   await store.dispatch(actionTypes.SAVE_ISVALIDATED, teste);
-    //   const token = store.getters.GET_ISVALIDATED;
-    //   const tokenaa = store.state.auth.isValidated;
-    //   console.log('tokenaa', tokenaa);
-    //   console.log(token);
+    //   const teste = new userModel(
+    //     '10',
+    //     'gusta@gmail.com',
+    //     'gustavo',
+    //     '19/06/1994',
+    //     '5548988647787',
+    //     'male',
+    //     false,
+    //     'aehhaseo29nf238998qwd89h213984781298hwd'
+    //   );
+    //   await store.dispatch(actionTypesa.SAVE_USER, teste);
+    //   const user = await store.getters.GET_USER;
+    //   console.log('user here:', user);
     // };
 
     const handleLogin = async () => {

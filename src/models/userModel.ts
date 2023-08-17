@@ -1,5 +1,3 @@
-import tokenModel from '../models/tokenModel';
-
 class userModel {
   id: string;
   email: string;
@@ -8,7 +6,7 @@ class userModel {
   phone: string;
   gender: string;
   isValidated: boolean;
-  token: tokenModel;
+  token: string;
 
   constructor(
     id: string,
@@ -18,7 +16,7 @@ class userModel {
     phone: string,
     gender: string,
     isValidated: boolean,
-    token: tokenModel
+    token: string
   ) {
     this.id = id;
     this.email = email;
